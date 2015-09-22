@@ -23,16 +23,14 @@ class User extends CI_Controller {
     {
         parent::__construct();
         $this->load->model('users_model');
-
-
     }
 
 	public function registration()
 	{
+
         $config['upload_path']   = "./uploads/";
         $config['allowed_types'] = "gif|jpg|png";
         $this->load->library('upload',$config);
-
 
         $this->load->library('form_validation');
         $this->form_validation->set_rules('first_name','First Name','trim|required|min_length[4]');
@@ -54,7 +52,6 @@ class User extends CI_Controller {
             $data = $this->input->post();
             $this->users_model->add_user($data);
             $this->site();
-            //add new User
         }
 	}
 
@@ -77,7 +74,6 @@ class User extends CI_Controller {
         }
         else
         {
-            // throw an error because nothing was uploaded
             $this->form_validation->set_message('handle_upload', "You must upload an image!");
             return false;
         }
@@ -87,17 +83,9 @@ class User extends CI_Controller {
     {
 
         if(!$this->session->userdata('user_id'))
-        {
-//            print_r('aaa');
-//            exit;
            $this->login();
-        }
         else
-        {
-//            print_r('sss');
-//            exit;
             $this->site();
-        }
     }
 
     public function site()
@@ -127,15 +115,6 @@ class User extends CI_Controller {
 
     public function logout()
     {
-//        $user_data = [
-//            'user_id'=>'',
-//            'first_name'=>'',
-//            'last_name'=>'',
-//            'email'=>'',
-//            'loggin'=>false,
-//        ];
-//
-//        $this->session->unset_userdata($user_data);
         $this->session->sess_destroy();
         redirect('User/login');
     }
