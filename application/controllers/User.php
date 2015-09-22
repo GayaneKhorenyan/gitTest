@@ -27,11 +27,9 @@ class User extends CI_Controller {
 
 	public function registration()
 	{
-
         $config['upload_path']   = "./uploads/";
         $config['allowed_types'] = "gif|jpg|png";
         $this->load->library('upload',$config);
-
         $this->load->library('form_validation');
         $this->form_validation->set_rules('first_name','First Name','trim|required|min_length[4]');
         $this->form_validation->set_rules('last_name','Last Name','trim|required|min_length[4]');
@@ -39,7 +37,6 @@ class User extends CI_Controller {
         $this->form_validation->set_rules('password','Password', 'trim|required|min_length[4]|max_length[32]');
         $this->form_validation->set_rules('con_password','Password Confirmation','trim|required|matches[password]');
         $this->form_validation->set_rules('image','Image','callback_handle_upload');
-
         if(!$this->form_validation->run())
         {
             $email = $this->input->post('email');
@@ -81,7 +78,6 @@ class User extends CI_Controller {
 
     public function index()
     {
-
         if(!$this->session->userdata('user_id'))
            $this->login();
         else

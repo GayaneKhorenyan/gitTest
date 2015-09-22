@@ -32,5 +32,5 @@
                 <input type="submit" class="greenButton" value="Submit" />
             </p>
         </form>
-    </div><!--<div class="reg_form">-->
+    </div>
 </div>
