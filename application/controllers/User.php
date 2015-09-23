@@ -1,7 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class User extends CI_Controller {
+class User extends CI_Controller
+{
 
     public function __construct()
     {
@@ -38,7 +39,8 @@ class User extends CI_Controller {
 	}
 
     public function site()
-    {   if($this->session->userdata('loggin'))
+    {
+        if($this->session->userdata('loggin'))
         {
             $data['title'] = 'Site';
             $this->load->view('header',$data);
@@ -62,7 +64,6 @@ class User extends CI_Controller {
         $this->load->library('form_validation');
         $this->form_validation->set_rules('email','Email','trim|required|min_length[4]|valid_email');
         $this->form_validation->set_rules('password','Password', 'required|trim|max_length[200]|callback_checkUsernamePassword');
-
         if($this->form_validation->run())
         {
             $this->site();
