@@ -3,22 +3,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class User extends CI_Controller {
 
-	/**
-	 * Index Page for this controller.
-	 *
-	 * Maps to the following URL
-	 * 		http://example.com/index.php/welcome
-	 *	- or -
-	 * 		http://example.com/index.php/welcome/index
-	 *	- or -
-	 * Since this controller is set as the default controller in
-	 * config/routes.php, it's displayed at http://example.com/
-	 *
-	 * So any other public methods not prefixed with an underscore will
-	 * map to /index.php/welcome/<method_name>
-	 * @see http://codeigniter.com/user_guide/general/urls.html
-	 */
-
     public function __construct()
     {
         parent::__construct();
@@ -39,18 +23,59 @@ class User extends CI_Controller {
         $this->form_validation->set_rules('image','Image','callback_handle_upload');
         if(!$this->form_validation->run())
         {
-            $email = $this->input->post('email');
-            $password = md5($this->input->post('password'));
-            $this->users_model->login($email,$password);
-            $this->index();
+            $data['title'] = 'Registration';
+            $this->load->view('header',$data);
+            $this->load->view('registration',$data);
+            $this->load->view('footer',$data);
         }
         else
         {
             $data = $this->input->post();
             $this->users_model->add_user($data);
+            $this->users_model->login($data['email'],$data['password']);
             $this->site();
         }
 	}
+
+    public function site()
+    {   if($this->session->userdata('loggin'))
+        {
+            $data['title'] = 'Site';
+            $this->load->view('header',$data);
+            $this->load->view('index',$data);
+            $this->load->view('footer',$data);
+        }
+        else
+            $this->signin();
+    }
+
+    public function signin()
+    {
+        $data['title'] = 'Login';
+        $this->load->view('header',$data);
+        $this->load->view('login',$data);
+        $this->load->view('footer',$data);
+    }
+
+    public function login()
+    {
+        $this->load->library('form_validation');
+        $this->form_validation->set_rules('email','Email','trim|required|min_length[4]|valid_email');
+        $this->form_validation->set_rules('password','Password', 'required|trim|max_length[200]|callback_checkUsernamePassword');
+
+        if($this->form_validation->run())
+        {
+            $this->site();
+        }
+        else
+            $this->signin();
+    }
+
+    public function logout()
+    {
+        $this->session->sess_destroy();
+        redirect('User/login');
+    }
 
     public function handle_upload()
     {
@@ -76,42 +101,17 @@ class User extends CI_Controller {
         }
     }
 
-    public function index()
-    {
-        if(!$this->session->userdata('user_id'))
-           $this->login();
-        else
-            $this->site();
-    }
-
-    public function site()
-    {
-        $data['title'] = 'Site';
-        $this->load->view('header',$data);
-        $this->load->view('index',$data);
-        $this->load->view('footer',$data);
-    }
-
-    public function login()
+    public function checkUsernamePassword()
     {
         $email = $this->input->post('email');
         $password = md5($this->input->post('password'));
-        if($this->users_model->login($email,$password))
+        $remember = $this->input->post('remember');
+        if(!$this->users_model->login($email,$password,$remember))
         {
-            $this->site();
+            $this->session->set_flashdata('login_error',TRUE);
+            $this->form_validation->set_message('checkUsernamePassword', 'Sorry Username or Password is not correct.');
+            return false;
         }
-        else
-        {
-            $data['title'] = 'Login';
-            $this->load->view('header',$data);
-            $this->load->view('login',$data);
-            $this->load->view('footer',$data);
-        }
-    }
-
-    public function logout()
-    {
-        $this->session->sess_destroy();
-        redirect('User/login');
+        return true;
     }
 }

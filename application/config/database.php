@@ -81,7 +81,7 @@ $db['default'] = array(
 	'password' => '',
 	'database' => 'code_project',
 	'dbdriver' => 'mysqli',
-	'dbprefix' => 'cd',
+	'dbprefix' => '',
 	'pconnect' => FALSE,
 	'db_debug' => (ENVIRONMENT !== 'production'),
 	'cache_on' => FALSE,

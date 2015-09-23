@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Yerevan
- * Date: 21.09.2015
- * Time: 11:14
- */
+
 class Users_model extends CI_Model
 {
     public function __construct()
@@ -29,7 +24,7 @@ class Users_model extends CI_Model
         $this->db->insert('users',$user_data);
     }
 
-    public function login($email,$pass)
+    public function login($email,$pass,$remember=null)
     {
         $this->db->where('email',$email);
         $this->db->where('password',$pass);
@@ -45,12 +40,17 @@ class Users_model extends CI_Model
                     'email'=>$row->email,
                     'loggin'=>true,
                 ];
+                if($remember)
+                    $this->session->sess_expiration = '14400';
                 $this->session->set_userdata($user_data);
                 return true;
             }
         }
         return false;
-
     }
 
+    public function pass_email_comp($email,$pass)
+    {
+
+    }
 }

@@ -1,8 +1,5 @@
 <div id="content">
-    <span>
-        Welcome To Site
-    </span>
-    <a href="<?= base_url('/User/logout')?>">
-        <input type="submit" value="Logout" />
-    </a>
+    <h2>Welcome Back, <?php echo $this->session->userdata('first_name'); ?>!</h2>
+    <p>This section represents the area that only logged in members can access.</p>
+    <h4><?php echo anchor('/User/logout', 'Logout'); ?></h4>
 </div>
