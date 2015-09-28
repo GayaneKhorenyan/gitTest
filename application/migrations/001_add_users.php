@@ -33,12 +33,17 @@ class Migration_Add_users extends CI_Migration
                 'constraint' => '255',
             ),
         ));
+
         $this->dbforge->add_key('id', TRUE);
         $this->dbforge->create_table('users');
     }
 
     public function down()
     {
-        $this->dbforge->drop_table('users');
+//        $sql_delete_prod = "DELETE FROM product WHERE  user_id IN (SELECT id FROM users)";
+//        $this->db->query($sql_delete_prod);
+//
+//        if($this->db->affected_rows())
+            $this->dbforge->drop_table('users');
     }
 }

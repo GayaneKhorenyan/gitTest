@@ -21,15 +21,15 @@ class Users_model extends CI_Model
             'password'=>md5($data['password']),
             'image'=>$data['image']
         ];
+
         $this->db->insert('users',$user_data);
     }
 
-    public function login($email,$pass,$remember=null)
+    public function login($email,$pass,$remember = null)
     {
-        $this->db->where('email',$email);
-        $this->db->where('password',$pass);
-        $query = $this->db->get('users');
-        if($query->num_rows()>0)
+        $query = $this->db->where(['email'=>$email,'password'=>$pass])->get('users');
+
+        if($query->num_rows() > 0)
         {
             foreach($query->result() as $row)
             {
@@ -38,7 +38,7 @@ class Users_model extends CI_Model
                     'first_name'=>$row->first_name,
                     'last_name'=>$row->last_name,
                     'email'=>$row->email,
-                    'loggin'=>true,
+                    'is_logged'=>true,
                 ];
                 if($remember)
                     $this->session->sess_expiration = '14400';
@@ -47,10 +47,5 @@ class Users_model extends CI_Model
             }
         }
         return false;
-    }
-
-    public function pass_email_comp($email,$pass)
-    {
-
     }
 }
