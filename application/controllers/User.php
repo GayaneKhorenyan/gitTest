@@ -142,6 +142,7 @@ class User extends CI_Controller
             $config["total_rows"] = $this->products_model->user_product_count($uid);
             $config["per_page"] = 5;
             $config["uri_segment"] = 3;
+            $config['use_page_numbers'] = TRUE;
 
             $this->pagination->initialize($config);
 
@@ -157,6 +158,42 @@ class User extends CI_Controller
             $this->load->view("products", $data);
             $this->load->view('footer',$data);
         }
+    }
+
+    public function all_products()
+    {
+        $this->load->helper("url");
+        $this->load->model("products_model");
+        $this->load->library("pagination");
+
+        $config = array();
+        $config["base_url"] = base_url("User/user_products");
+        $config["total_rows"] = count($this->products_model->get_products());
+        $config["per_page"] = 5;
+        $config["uri_segment"] = 3;
+
+        $this->pagination->initialize($config);
+
+        $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+
+        $data['title'] = 'All Products';
+        $data["results"] = $this->products_model->fetch_products($config["per_page"], $page);
+        $data["links"] = $this->pagination->create_links();
+
+        if($this->session->userdata('user_id'))
+        {
+            $this->load->view('header',$data);
+            $this->load->view('nav_block',$data);
+            $this->load->view("products", $data);
+            $this->load->view('footer',$data);
+        }
+        else
+        {
+            $this->load->view('header',$data);
+            $this->load->view("products", $data);
+            $this->load->view('footer',$data);
+        }
+
     }
 
     public function add_product()

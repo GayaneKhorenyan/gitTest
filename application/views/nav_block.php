@@ -25,13 +25,16 @@
                 <li><a href="#">Link3</a></li>
                 <li><a href="#">Link4</a></li>
             </ul>
-            <a href="<?= base_url('/User/logout'); ?>" class=" navbar-form navbar-right">
+            <a href="<?= base_url('/User/logout'); ?>" class="navbar-form navbar-right">
                 <button type="button" class="btn btn-danger ">Logout</button>
             </a>
-            <a href="<?= base_url("/User/user_products"); ?>" class=" navbar-form navbar-right">
-                <button type="button" class="btn btn-success ">Products</button>
+            <a href="<?= base_url("/User/user_products"); ?>" class="navbar-form navbar-right">
+                <button type="button" class="btn btn-success ">My Products</button>
             </a>
-            <a href="<?= base_url("/User/site"); ?>" class=" navbar-form navbar-right">
+            <a href="<?= base_url("/User/all_products"); ?>" class="navbar-form navbar-right">
+                <button type="button" class="btn btn-primary ">All Products</button>
+            </a>
+            <a href="<?= base_url("/User/site"); ?>" class="navbar-form navbar-right">
                 <button type="button" class="btn btn-info ">Home</button>
             </a>
         </div>
