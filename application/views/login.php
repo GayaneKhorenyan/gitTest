@@ -17,14 +17,13 @@
                         <input id="login-password" type="password" class="form-control" name="password" placeholder="Password">
                     </div>
                     <div class="input-group">
-                        <div class=++"checkbox">
+                        <div class="checkbox">
                             <label>
-                                <input class="pull-left" id="login-remember" type="checkbox" name="remember" value="1">Remember Me
+                                <input class="pull-left" id="login-remember" checked type="checkbox" name="remember" value="1">Remember Me
                             </label>
                         </div>
                     </div>
                     <div style="margin-top:10px" class="form-group">
-                        <!-- Button -->
                         <div class="col-sm-12 controls">
                             <button type="submit" class="btn btn-success">Login</button>
                         </div>

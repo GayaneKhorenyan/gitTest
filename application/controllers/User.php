@@ -10,12 +10,11 @@ class User extends CI_Controller
         $this->load->model('users_model');
     }
 
+    /**
+     * User registration.
+     */
 	public function registration()
 	{
-        $config['upload_path']   = "./uploads/";
-        $config['allowed_types'] = "gif|jpg|png";
-
-        $this->load->library('upload',$config);
         $this->load->library('form_validation');
 
         $this->form_validation->set_rules('first_name','First Name','trim|required|min_length[4]');
@@ -35,21 +34,23 @@ class User extends CI_Controller
         else
         {
             $data = $this->input->post();
+            $data['image'] = $this->upload->data('file_name');
+
             $this->users_model->add_user($data);
             $this->users_model->login($data['email'],md5($data['password']));
 
-            redirect('User/site');
+            redirect('User/index');
         }
 	}
 
-    public function site()
+    /**
+     * Index page.
+     */
+    public function index()
     {
-        if($this->session->userdata('is_logged'))
+        if($this->session->userdata('user_id'))
         {
-            $this->load->model('products_model');
-
-            $data['products'] = $this->products_model->get_user_products($this->session->userdata('user_id'));
-            $data['title'] = 'Site';
+            $data['title'] = 'Home';
 
             $this->load->view('header',$data);
             $this->load->view('nav_block',$data);
@@ -60,6 +61,9 @@ class User extends CI_Controller
             redirect('User/login');
     }
 
+    /**
+     * Users login.
+     */
     public function login()
     {
         if(!$this->session->userdata('user_id'))
@@ -70,7 +74,7 @@ class User extends CI_Controller
 
             if($this->form_validation->run())
             {
-                redirect('User/site');
+                redirect('User/index');
             }
             else
             {
@@ -82,6 +86,9 @@ class User extends CI_Controller
         }
     }
 
+    /**
+     * Logout.
+     */
     public function logout()
     {
         $this->session->sess_destroy();
@@ -89,14 +96,22 @@ class User extends CI_Controller
         redirect('User/login');
     }
 
+    /**
+     * File validation and upload.
+     *
+     * @return boolean
+     */
     public function handle_upload()
     {
         if (isset($_FILES['image']) && !empty($_FILES['image']['name']))
         {
+            $config['upload_path']   = "./uploads/";
+            $config['allowed_types'] = "gif|jpg|png";
+
+            $this->load->library('upload',$config);
+
             if ($this->upload->do_upload('image'))
             {
-                $upload_data    = $this->upload->data();
-                $_POST['image'] = $upload_data['file_name'];
                 return true;
             }
             else
@@ -112,6 +127,11 @@ class User extends CI_Controller
         }
     }
 
+    /**
+     * Username and Password validation.
+     *
+     * @return boolean
+     */
     public function check_username_password()
     {
         $email = $this->input->post('email');
@@ -127,153 +147,4 @@ class User extends CI_Controller
         return true;
     }
 
-    public function user_products()
-    {
-        $uid = $this->session->userdata('user_id');
-
-        if(!empty($uid))
-        {
-            $this->load->helper("url");
-            $this->load->model("products_model");
-            $this->load->library("pagination");
-
-            $config = array();
-            $config["base_url"] = base_url("User/user_products");
-            $config["total_rows"] = $this->products_model->user_product_count($uid);
-            $config["per_page"] = 5;
-            $config["uri_segment"] = 3;
-            $config['use_page_numbers'] = TRUE;
-
-            $this->pagination->initialize($config);
-
-            $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
-
-            $data['title'] = 'Products';
-            $data["results"] = $this->products_model->
-                user_fetch_products($uid,$config["per_page"], $page);
-            $data["links"] = $this->pagination->create_links();
-
-            $this->load->view('header',$data);
-            $this->load->view('nav_block',$data);
-            $this->load->view("products", $data);
-            $this->load->view('footer',$data);
-        }
-    }
-
-    public function all_products()
-    {
-        $this->load->helper("url");
-        $this->load->model("products_model");
-        $this->load->library("pagination");
-
-        $config = array();
-        $config["base_url"] = base_url("User/user_products");
-        $config["total_rows"] = count($this->products_model->get_products());
-        $config["per_page"] = 5;
-        $config["uri_segment"] = 3;
-
-        $this->pagination->initialize($config);
-
-        $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
-
-        $data['title'] = 'All Products';
-        $data["results"] = $this->products_model->fetch_products($config["per_page"], $page);
-        $data["links"] = $this->pagination->create_links();
-
-        if($this->session->userdata('user_id'))
-        {
-            $this->load->view('header',$data);
-            $this->load->view('nav_block',$data);
-            $this->load->view("products", $data);
-            $this->load->view('footer',$data);
-        }
-        else
-        {
-            $this->load->view('header',$data);
-            $this->load->view("products", $data);
-            $this->load->view('footer',$data);
-        }
-
-    }
-
-    public function add_product()
-    {
-        $status = 'error';
-        $uid = $this->session->userdata('user_id');
-
-        if(!empty($uid))
-        {
-            $config['upload_path']   = "./uploads/";
-            $config['allowed_types'] = "gif|jpg|png";
-
-            $this->load->library('upload',$config);
-            $this->load->library('form_validation');
-
-            $this->form_validation->set_rules('prod_name','Name','trim|required|min_length[4]|max_length[50]');
-            $this->form_validation->set_rules('description','Description','trim|required|min_length[4]|max_length[255]');
-            $this->form_validation->set_rules('location','Location','trim|required|min_length[4]|max_length[255]');
-            $this->form_validation->set_rules('price','Price','trim|required|integer|min_length[1]|max_length[10]');
-            $this->form_validation->set_rules('image','Image','callback_handle_upload');
-
-            if(!$this->form_validation->run())
-            {
-                $status = 'success';
-                $this->load->model('categories_model');
-
-                if($this->categories_model->get_categories_list())
-                {
-                    $data['categories'] = $this->categories_model->get_categories_list();
-                    $json['content'] = $this->load->view('add_product',$data,true);
-                }
-                else
-                    $json['content'] = "There aren't any category";
-            }
-            else
-            {
-                $data = $this->input->post();
-                $data['user_id'] = $uid;
-
-                $this->load->model('products_model');
-                if($this->products_model->add_products($data))
-                    $status = 'success';
-            }
-        }
-
-        $json['status'] = $status;
-        $this->output->set_content_type('application/json');
-        return $this->output->set_output(json_encode($json));
-    }
-
-    public function view_products()
-    {
-        $status = 'error';
-        $pid = $this->input->post('pid');
-
-        if(!empty($pid))
-        {
-            $this->load->model('products_model');
-
-            if($product = $this->products_model->get_product($pid))
-            {
-                $this->load->model('categories_model');
-                if($cat_name = $this->categories_model->get_category($product->cat_id))
-                    $data['cat_name'] = $cat_name;
-                $data['product'] = $product;
-
-                $json['product'] = $this->load->view('view_product',$data,true);
-                $status  = 'success';
-            }
-        }
-
-        $json['status'] = $status;
-        $this->output->set_content_type('application/json');
-        return $this->output->set_output(json_encode($json));
-    }
-    public function reg()
-    {
-        $data['title'] = 'Registration';
-        $this->load->view('header',$data);
-        $this->load->view('registration_new',$data);
-        $this->load->view('footer',$data);
-    }
 }

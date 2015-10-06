@@ -1,4 +1,4 @@
-$('.image').change(function(e){
+$('body').on('change','.image',function(e){
         var files = e.target.files;
         $('.img_prew').attr({
             src:URL.createObjectURL(files[0])

@@ -9,5 +9,12 @@
     <link rel="stylesheet" href="<?= base_url("assets/css/bootstrap-theme.min.css"); ?>">
 </head>
 <body>
-    <div id="wrapper">
+
+    <div id="product_modal" class="modal fade" role="dialog">
+        <div class="modal-dialog" id="modal_dialog">
+            <!-- Modal content-->
+        </div>
+    </div>
+
+    <div class="container" id="wrapper">
 

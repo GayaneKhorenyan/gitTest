@@ -7,11 +7,12 @@ class Users_model extends CI_Model
         parent::__construct();
     }
 
-    public  function get_users() {
-        $query = $this->db->get('users');
-        return $query->result();
-    }
-
+    /**
+     * Add user.
+     *
+     * @param  array  $data
+     * @return boolean
+     */
     public function add_user($data)
     {
         $user_data = [
@@ -21,10 +22,23 @@ class Users_model extends CI_Model
             'password'=>md5($data['password']),
             'image'=>$data['image']
         ];
-
         $this->db->insert('users',$user_data);
+
+        if($this->db->affected_rows())
+        {
+            return true;
+        }
+        return false;
     }
 
+    /**
+     * User login.
+     *
+     * @param  string  $email
+     * @param  string  $pass
+     * @param  int or null  $remember
+     * @return boolean
+     */
     public function login($email,$pass,$remember = null)
     {
         $query = $this->db->where(['email'=>$email,'password'=>$pass])->get('users');
@@ -40,9 +54,13 @@ class Users_model extends CI_Model
                     'email'=>$row->email,
                     'is_logged'=>true,
                 ];
+
                 if($remember)
+                {
                     $this->session->sess_expiration = '14400';
+                }
                 $this->session->set_userdata($user_data);
+
                 return true;
             }
         }

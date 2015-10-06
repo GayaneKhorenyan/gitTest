@@ -1,42 +1,32 @@
-<div class="navbar navbar-default navbar-static-top">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#responsive-menu">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a href="#" class="navbar-brand">Logotip</a>
+<div class="navbar navbar-default navbar-static-top-top" style="margin-top: 10px" id="navbar_block">
+    <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav" id="nav_ul">
+            <li><a href="<?= base_url("/User/index"); ?>" >Home</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Products <b class="caret"></b></a>
+                <ul class="dropdown-menu" style="border-radius: 2px" id="nav_sub_ul">
+                    <li>
+                        <a href="<?= base_url("/Product/user_products"); ?>">My Products</a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="<?= base_url("/Product/all_products"); ?>">All Products</a>
+                    </li>
+                </ul>
+            </li>
+            <li><a href="<?= base_url("/User/categories"); ?>" >Categories</a></li>
+        </ul>
+        <div class="navbar-right nav-right-menu" style="margin: 17px 20px 0 0;">
+            <a href="<?= base_url("/User/logout"); ?>">Logout
+                <i class="fa fa-sign-out "></i>
+            </a>
         </div>
-        <div class="collapse navbar-collapse" id="responsive-menu">
-            <ul class="nav navbar-nav">
-                <li><a href="#">Link1</a></li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Link2 <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">Link21</a></li>
-                        <li><a href="#">Link22</a></li>
-                        <li><a href="#">Link23</a></li>
-                        <li><a href="#">Link24</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#">Link25</a></li>
-                    </ul>
-                </li>
-                <li><a href="#">Link3</a></li>
-                <li><a href="#">Link4</a></li>
-            </ul>
-            <a href="<?= base_url('/User/logout'); ?>" class="navbar-form navbar-right">
-                <button type="button" class="btn btn-danger ">Logout</button>
-            </a>
-            <a href="<?= base_url("/User/user_products"); ?>" class="navbar-form navbar-right">
-                <button type="button" class="btn btn-success ">My Products</button>
-            </a>
-            <a href="<?= base_url("/User/all_products"); ?>" class="navbar-form navbar-right">
-                <button type="button" class="btn btn-primary ">All Products</button>
-            </a>
-            <a href="<?= base_url("/User/site"); ?>" class="navbar-form navbar-right">
-                <button type="button" class="btn btn-info ">Home</button>
+        <div class="navbar-right divider-vertical "> </div>
+        <div class="navbar-right nav-right-menu" style="margin: 17px 15px 0 0;">
+            <a href='#' data-toggle="modal" onclick='javascript:addProducts("<?= base_url('/Product/add_product')?>")' data-target="#product_modal">Add Product
+                <i class="fa fa-shopping-cart"></i>
             </a>
         </div>
     </div>
 </div>
+
